@@ -23,7 +23,7 @@ export const TodoItem = (
     filterValue,
     onInputChange,
     tempTodo,
-    setErrorMessage,
+    setErrorMessage
   }: Props
 ) => {
   useEffect(() => {

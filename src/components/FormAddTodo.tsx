@@ -61,6 +61,7 @@ export const FormAddTodo = ({
     addTodo
       .then(response => {
         setTodos(prevTodos => [...prevTodos, response]);
+        setTodoText('');
         setTempTodo(false);
       })
       .catch(error => {
@@ -68,13 +69,12 @@ export const FormAddTodo = ({
         // eslint-disable-next-line no-console
         console.error('Помилка при додаванні todo:', error);
         setErrorMessage(ErrorMessage.ADD);
+        setTodoText('');
 
         setTimeout(() => {
           setErrorMessage(ErrorMessage.DEFAULT);
         }, 3000);
       });
-
-    setTodoText('');
   };
 
   useEffect(() => {
