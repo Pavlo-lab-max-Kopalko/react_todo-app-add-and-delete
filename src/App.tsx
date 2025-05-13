@@ -18,7 +18,7 @@ export const App: React.FC = () => {
   const [filterValue, setFilterValue] = useState<FilteredStatus>(
     FilteredStatus.ALL,
   );
-  const [tempTodo, setTempTodo] = useState<false | Todo>(false);
+  const [tempTodo, setTempTodo] = useState<null | Todo>(null);
 
   useEffect(() => {
     getTodos()

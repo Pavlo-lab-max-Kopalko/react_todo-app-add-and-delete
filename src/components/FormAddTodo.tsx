@@ -12,9 +12,9 @@ interface Props {
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
   setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
   todos: Todo[];
-  setErrorMessage: React.Dispatch<React.SetStateAction<ErrorMessage>>;
-  setTempTodo: React.Dispatch<React.SetStateAction<Todo | false>>;
-  tempTodo: Todo | false;
+  setErrorMessage: (value: ErrorMessage) => void;
+  setTempTodo: (value: Todo | null) => void;
+  tempTodo: Todo | null;
 }
 
 export const FormAddTodo = ({
@@ -62,10 +62,8 @@ export const FormAddTodo = ({
       .then(response => {
         setTodos(prevTodos => [...prevTodos, response]);
         setTodoText('');
-        setTempTodo(false);
       })
       .catch(error => {
-        setTempTodo(false);
         // eslint-disable-next-line no-console
         console.error('Помилка при додаванні todo:', error);
         setErrorMessage(ErrorMessage.ADD);
@@ -74,6 +72,9 @@ export const FormAddTodo = ({
         setTimeout(() => {
           setErrorMessage(ErrorMessage.DEFAULT);
         }, 3000);
+      })
+      .finally(() => {
+        setTempTodo(null);
       });
   };
 

@@ -8,12 +8,12 @@ import { deleteTodos } from '../api/todos';
 
 interface Props {
   todos: Todo[];
-  setTodos: React.Dispatch<React.SetStateAction<Todo[]>>
-  setCount: React.Dispatch<React.SetStateAction<number>>;
+  setTodos: (value: Todo[]) => void;
+  setCount: (value: number) => void;
   filterValue: FilteredStatus;
   onInputChange: () => void;
-  tempTodo: false | Todo;
-  setErrorMessage: React.Dispatch<React.SetStateAction<ErrorMessage>>;
+  tempTodo: Todo | null;
+  setErrorMessage: (value: ErrorMessage) => void;
 }
 
 export const TodoItem = (
@@ -34,9 +34,6 @@ export const TodoItem = (
     setCount(incompleteCount);
   }, [todos, setCount]);
 
-  console.log(todos);
-  console.log(filterValue);
-
   const filteredTodos = todos.filter(todo => {
     if (filterValue === FilteredStatus.ACTIVE) {
       return !todo.completed;
@@ -55,13 +52,10 @@ export const TodoItem = (
     const removeTodo = deleteTodos(todoId);
 
     removeTodo
-      .then(response => {
+      .then(() => {
         const exsistedTodos = todos.filter(todo => todo.id !== todoId);
 
         setTodos(exsistedTodos);
-
-        console.log(response);
-        console.log(exsistedTodos);
       })
       .catch(error => {
         // eslint-disable-next-line no-console
@@ -75,9 +69,6 @@ export const TodoItem = (
       .finally(() =>
         setDeletedTodoId(prevIds => prevIds.filter(id => id !== todoId)));
   };
-
-  console.log(filteredTodos);
-  console.log(tempTodo);
 
   return (
     <section className="todoapp__main" data-cy="TodoList">
@@ -134,11 +125,10 @@ export const TodoItem = (
         </div>
       ))}
 
-      {!!tempTodo &&
+      {tempTodo &&
         <TempTodo
           todo={tempTodo}
           onInputChange={onInputChange}
-          deletedTodoId={deletedTodoId}
         />
       }
 
