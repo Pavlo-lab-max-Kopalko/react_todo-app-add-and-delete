@@ -5,15 +5,16 @@ import cn from 'classnames';
 interface Props {
   todo: Todo | false;
   onInputChange: () => void;
+  deletedTodoId: number[];
 }
 
-export const TempTodo = ({ todo, onInputChange }: Props) => {
+export const TempTodo = ({ todo, onInputChange, deletedTodoId }: Props) => {
   return (
     <>
       {todo && (
         <div
           data-cy="todo"
-          className={cn('todo', {
+          className={cn('todo temp-item-exit temp-item-exit-active', {
             completed: todo && typeof todo === 'object' && todo.completed,
           })}
         >
@@ -47,7 +48,12 @@ export const TempTodo = ({ todo, onInputChange }: Props) => {
             ×
           </button>
 
-          <div data-cy="TodoLoader" className="modal overlay">
+          <div
+            data-cy="TodoLoader"
+            className={cn('modal overlay', {
+              'is-active': deletedTodoId.includes(todo.id),
+            })}
+          >
             <div className="modal-background has-background-white-ter" />
             <div className="loader" />
           </div>

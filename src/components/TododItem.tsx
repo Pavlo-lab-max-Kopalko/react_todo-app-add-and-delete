@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import cn from 'classnames';
 import { ErrorMessage, FilteredStatus, Todo } from '../types/Todo';
 import { TempTodo } from './TempTodo/TempTodo';
@@ -26,6 +26,8 @@ export const TodoItem = (
     setErrorMessage
   }: Props
 ) => {
+  const [deletedTodoId, setDeletedTodoId] = useState<number[]>([]);
+
   useEffect(() => {
     const incompleteCount = todos.filter(todo => !todo.completed).length;
 
@@ -48,6 +50,8 @@ export const TodoItem = (
   });
 
   const onDelete = (todoId: number) => {
+    setDeletedTodoId((prevIds) => [...prevIds, todoId]);
+
     const removeTodo = deleteTodos(todoId);
 
     removeTodo
@@ -67,7 +71,9 @@ export const TodoItem = (
         setTimeout(() => {
           setErrorMessage(ErrorMessage.DEFAULT);
         }, 3000);
-      });
+      })
+      .finally(() =>
+        setDeletedTodoId(prevIds => prevIds.filter(id => id !== todoId)));
   };
 
   console.log(filteredTodos);
@@ -79,7 +85,7 @@ export const TodoItem = (
         <div
           key={todo.id}
           data-cy="Todo"
-          className={cn('todo', { completed: todo.completed })}
+          className={cn('todo item-enter-done', { completed: todo.completed })}
         >
           <label className="todo__status-label">
             <input
@@ -116,7 +122,12 @@ export const TodoItem = (
             ×
           </button>
 
-          <div data-cy="TodoLoader" className="modal overlay">
+          <div
+            data-cy="TodoLoader"
+            className={cn('modal overlay', {
+              'is-active': deletedTodoId.includes(todo.id),
+            })}
+          >
             <div className="modal-background has-background-white-ter" />
             <div className="loader" />
           </div>
@@ -124,7 +135,11 @@ export const TodoItem = (
       ))}
 
       {!!tempTodo &&
-        <TempTodo todo={tempTodo} onInputChange={onInputChange} />
+        <TempTodo
+          todo={tempTodo}
+          onInputChange={onInputChange}
+          deletedTodoId={deletedTodoId}
+        />
       }
 
     </section>
