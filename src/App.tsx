@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { UserWarning } from './UserWarning';
 import { getTodos, USER_ID } from './api/todos';
 import { ErrorMessage, FilteredStatus, Todo } from './types/Todo';
@@ -19,6 +19,8 @@ export const App: React.FC = () => {
     FilteredStatus.ALL,
   );
   const [tempTodo, setTempTodo] = useState<null | Todo>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const [deletedTodoId, setDeletedTodoId] = useState<number[]>([]);
 
   useEffect(() => {
     getTodos()
@@ -49,12 +51,7 @@ export const App: React.FC = () => {
 
   const handleInputChangeLater = () => {
     // Тут ви напишете логіку пізніше
-    console.log('Функція onChange буде реалізована тут');
   };
-
-  console.log(unableErrorMessage);
-
-  console.log(tempTodo);
 
   return (
     <div className="todoapp">
@@ -77,6 +74,7 @@ export const App: React.FC = () => {
             setErrorMessage={setUnableErrorMessage}
             setTempTodo={setTempTodo}
             tempTodo={tempTodo}
+            inputRef={inputRef}
           />
         </header>
 
@@ -88,6 +86,9 @@ export const App: React.FC = () => {
           onInputChange={handleInputChangeLater}
           tempTodo={tempTodo}
           setErrorMessage={setUnableErrorMessage}
+          inputRef={inputRef}
+          deletedTodoId={deletedTodoId}
+          setDeletedTodoId={setDeletedTodoId}
         />
 
         {/* Hide the footer if there are no todos */}
@@ -97,6 +98,10 @@ export const App: React.FC = () => {
             count={count}
             filterValue={filterValue}
             setFilterValue={setFilterValue}
+            todos={todos}
+            setTodos={setTodos}
+            inputRef={inputRef}
+            setErrorMessage={setUnableErrorMessage}
           />
         )}
       </div>

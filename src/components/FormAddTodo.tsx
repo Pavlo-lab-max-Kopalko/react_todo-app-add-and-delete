@@ -1,10 +1,4 @@
-import React, {
-  ChangeEvent,
-  FormEvent,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { postTodos, USER_ID } from '../api/todos';
 import { ErrorMessage, Todo } from '../types/Todo';
 
@@ -15,6 +9,7 @@ interface Props {
   setErrorMessage: (value: ErrorMessage) => void;
   setTempTodo: (value: Todo | null) => void;
   tempTodo: Todo | null;
+  inputRef: React.MutableRefObject<HTMLInputElement | null>;
 }
 
 export const FormAddTodo = ({
@@ -23,12 +18,9 @@ export const FormAddTodo = ({
   setErrorMessage,
   setTempTodo,
   tempTodo,
+  inputRef,
 }: Props) => {
   const [todoText, setTodoText] = useState<string>('');
-  // const [isInputDisabled, setIsInputDisabled] = useState<boolean>(false);
-  const inputRef = useRef<HTMLInputElement | null>(null);
-
-  // console.log(inputRef);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setTodoText(event.target.value);
@@ -67,7 +59,6 @@ export const FormAddTodo = ({
         // eslint-disable-next-line no-console
         console.error('Помилка при додаванні todo:', error);
         setErrorMessage(ErrorMessage.ADD);
-        setTodoText('');
 
         setTimeout(() => {
           setErrorMessage(ErrorMessage.DEFAULT);

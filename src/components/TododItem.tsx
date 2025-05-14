@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import cn from 'classnames';
 import { ErrorMessage, FilteredStatus, Todo } from '../types/Todo';
 import { TempTodo } from './TempTodo/TempTodo';
@@ -14,20 +14,23 @@ interface Props {
   onInputChange: () => void;
   tempTodo: Todo | null;
   setErrorMessage: (value: ErrorMessage) => void;
+  inputRef: React.MutableRefObject<HTMLInputElement | null>;
+  deletedTodoId: number[];
+  setDeletedTodoId: React.Dispatch<React.SetStateAction<number[]>>;
 }
 
-export const TodoItem = (
-  { todos,
-    setTodos,
-    setCount,
-    filterValue,
-    onInputChange,
-    tempTodo,
-    setErrorMessage
-  }: Props
-) => {
-  const [deletedTodoId, setDeletedTodoId] = useState<number[]>([]);
-
+export const TodoItem = ({
+  todos,
+  setTodos,
+  setCount,
+  filterValue,
+  onInputChange,
+  tempTodo,
+  setErrorMessage,
+  inputRef,
+  deletedTodoId,
+  setDeletedTodoId,
+}: Props) => {
   useEffect(() => {
     const incompleteCount = todos.filter(todo => !todo.completed).length;
 
@@ -47,12 +50,13 @@ export const TodoItem = (
   });
 
   const onDelete = (todoId: number) => {
-    setDeletedTodoId((prevIds) => [...prevIds, todoId]);
+    setDeletedTodoId(prevIds => [...prevIds, todoId]);
 
     const removeTodo = deleteTodos(todoId);
 
     removeTodo
       .then(() => {
+        inputRef.current?.focus();
         const exsistedTodos = todos.filter(todo => todo.id !== todoId);
 
         setTodos(exsistedTodos);
@@ -67,7 +71,8 @@ export const TodoItem = (
         }, 3000);
       })
       .finally(() =>
-        setDeletedTodoId(prevIds => prevIds.filter(id => id !== todoId)));
+        setDeletedTodoId(prevIds => prevIds.filter(id => id !== todoId)),
+      );
   };
 
   return (
@@ -108,7 +113,7 @@ export const TodoItem = (
             type="button"
             className="todo__remove"
             data-cy="TodoDelete"
-            onClick={() => (onDelete(todo.id))}
+            onClick={() => onDelete(todo.id)}
           >
             ×
           </button>
@@ -125,13 +130,7 @@ export const TodoItem = (
         </div>
       ))}
 
-      {tempTodo &&
-        <TempTodo
-          todo={tempTodo}
-          onInputChange={onInputChange}
-        />
-      }
-
+      <TempTodo todo={tempTodo} onInputChange={onInputChange} />
     </section>
   );
 };
