@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { UserWarning } from './UserWarning';
 import { getTodos, USER_ID } from './api/todos';
 import { ErrorMessage, FilteredStatus, Todo } from './types/Todo';
-import { TodoItem } from './components/TododItem';
+import { TodoList } from './components/TodoList';
 import cn from 'classnames';
 import { FormAddTodo } from './components/FormAddTodo';
 import { Footer } from './components/Footer';
@@ -26,8 +26,6 @@ export const App: React.FC = () => {
     getTodos()
       .then(setTodos)
       .catch(() => {
-        // eslint-disable-next-line no-console
-        console.log('Помилки під час отримання завдань:');
         setUnableErrorMessage(ErrorMessage.LOAD);
         setTimeout(() => {
           setUnableErrorMessage(ErrorMessage.DEFAULT);
@@ -78,7 +76,7 @@ export const App: React.FC = () => {
           />
         </header>
 
-        <TodoItem
+        <TodoList
           todos={todos}
           setTodos={setTodos}
           setCount={setCount}
@@ -119,7 +117,7 @@ export const App: React.FC = () => {
           data-cy="HideErrorButton"
           type="button"
           className="delete"
-          onClick={() => onHandler()}
+          onClick={onHandler}
         />
         {/* show only one message at a time */}
         {unableErrorMessage}

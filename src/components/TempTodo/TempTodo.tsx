@@ -1,32 +1,28 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import { Todo } from '../../types/Todo';
 import cn from 'classnames';
 
 interface Props {
-  todo: Todo | null;
+  title: string;
+  completed: boolean;
   onInputChange: () => void;
 }
 
-export const TempTodo = ({ todo, onInputChange }: Props) => {
-  if (todo === null) {
-    return;
-  }
-
+export const TempTodo = ({ title, completed, onInputChange }: Props) => {
   return (
-    <div data-cy="Todo" className={cn('todo', { completed: todo.completed })}>
+    <div data-cy="Todo" className={cn('todo', { completed: completed })}>
       <label className="todo__status-label">
         <input
           data-cy="TodoStatus"
           type="checkbox"
           className="todo__status"
-          checked={todo.completed}
+          checked={completed}
           onChange={onInputChange}
         />
       </label>
 
-      {todo.title ? (
+      {title ? (
         <span data-cy="TodoTitle" className="todo__title">
-          {todo.title}
+          {title}
         </span>
       ) : (
         <form>

@@ -1,10 +1,10 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useEffect } from 'react';
-import cn from 'classnames';
 import { ErrorMessage, FilteredStatus, Todo } from '../types/Todo';
 import { TempTodo } from './TempTodo/TempTodo';
 import { deleteTodos } from '../api/todos';
+import { TodoItem } from './TodoItem.tsx/TodoItem';
 
 interface Props {
   todos: Todo[];
@@ -19,7 +19,7 @@ interface Props {
   setDeletedTodoId: React.Dispatch<React.SetStateAction<number[]>>;
 }
 
-export const TodoItem = ({
+export const TodoList = ({
   todos,
   setTodos,
   setCount,
@@ -61,9 +61,7 @@ export const TodoItem = ({
 
         setTodos(exsistedTodos);
       })
-      .catch(error => {
-        // eslint-disable-next-line no-console
-        console.error('Помилка при видаленні todo:', error);
+      .catch(() => {
         setErrorMessage(ErrorMessage.DELETE);
 
         setTimeout(() => {
@@ -78,59 +76,22 @@ export const TodoItem = ({
   return (
     <section className="todoapp__main" data-cy="TodoList">
       {filteredTodos.map(todo => (
-        <div
+        <TodoItem
           key={todo.id}
-          data-cy="Todo"
-          className={cn('todo item-enter-done', { completed: todo.completed })}
-        >
-          <label className="todo__status-label">
-            <input
-              data-cy="TodoStatus"
-              type="checkbox"
-              className="todo__status"
-              checked={todo.completed}
-              onChange={onInputChange}
-            />
-          </label>
-
-          {todo.title ? (
-            <span data-cy="TodoTitle" className="todo__title">
-              {todo.title}
-            </span>
-          ) : (
-            <form>
-              <input
-                data-cy="TodoTitleField"
-                type="text"
-                className="todo__title-field"
-                placeholder="Empty todo will be deleted"
-                value="Todo is being edited now"
-              />
-            </form>
-          )}
-
-          <button
-            type="button"
-            className="todo__remove"
-            data-cy="TodoDelete"
-            onClick={() => onDelete(todo.id)}
-          >
-            ×
-          </button>
-
-          <div
-            data-cy="TodoLoader"
-            className={cn('modal overlay', {
-              'is-active': deletedTodoId.includes(todo.id),
-            })}
-          >
-            <div className="modal-background has-background-white-ter" />
-            <div className="loader" />
-          </div>
-        </div>
+          todo={todo}
+          onInputChange={onInputChange}
+          onDelete={onDelete}
+          deletedTodoId={deletedTodoId}
+        />
       ))}
 
-      <TempTodo todo={tempTodo} onInputChange={onInputChange} />
+      {tempTodo && (
+        <TempTodo
+          title={tempTodo.title}
+          completed={tempTodo.completed}
+          onInputChange={onInputChange}
+        />
+      )}
     </section>
   );
 };

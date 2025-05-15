@@ -55,9 +55,7 @@ export const FormAddTodo = ({
         setTodos(prevTodos => [...prevTodos, response]);
         setTodoText('');
       })
-      .catch(error => {
-        // eslint-disable-next-line no-console
-        console.error('Помилка при додаванні todo:', error);
+      .catch(() => {
         setErrorMessage(ErrorMessage.ADD);
 
         setTimeout(() => {
@@ -71,9 +69,7 @@ export const FormAddTodo = ({
 
   useEffect(() => {
     if (tempTodo && inputRef.current) {
-      // console.log('Спроба сфокусувати:', inputRef.current);
     } else {
-      // console.log('Не вдалося сфокусувати:', inputRef.current, tempTodo);
       inputRef.current?.focus();
     }
   }, [tempTodo, inputRef]);

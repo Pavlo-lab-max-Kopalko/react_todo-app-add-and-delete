@@ -2,6 +2,7 @@
 import React from 'react';
 import { ErrorMessage, FilteredStatus, Todo } from '../types/Todo';
 import { deleteTodos } from '../api/todos';
+import cn from 'classnames';
 
 interface Props {
   count: number;
@@ -62,6 +63,8 @@ export const Footer = ({
       });
   };
 
+  const allFilters = Object.values(FilteredStatus);
+
   return (
     <footer className="todoapp__footer" data-cy="Footer">
       <span className="todo-count" data-cy="TodosCounter">
@@ -70,32 +73,19 @@ export const Footer = ({
 
       {/* Active link should have the 'selected' class */}
       <nav className="filter" data-cy="Filter">
-        <a
-          href="#/"
-          className={`filter__link ${filterValue === FilteredStatus.ALL ? 'selected' : ''}`}
-          data-cy="FilterLinkAll"
-          onClick={() => setFilterValue(FilteredStatus.ALL)}
-        >
-          All
-        </a>
-
-        <a
-          href="#/active"
-          className={`filter__link ${filterValue === FilteredStatus.ACTIVE ? 'selected' : ''}`}
-          data-cy="FilterLinkActive"
-          onClick={() => setFilterValue(FilteredStatus.ACTIVE)}
-        >
-          Active
-        </a>
-
-        <a
-          href="#/completed"
-          className={`filter__link ${filterValue === FilteredStatus.COMPLETED ? 'selected' : ''}`}
-          data-cy="FilterLinkCompleted"
-          onClick={() => setFilterValue(FilteredStatus.COMPLETED)}
-        >
-          Completed
-        </a>
+        {allFilters.map(filter => (
+          <a
+            key={filter}
+            href={`#/${filter !== FilteredStatus.ALL ? filterValue.toLowerCase() : ''}`}
+            className={cn('filter__link', {
+              selected: filter === filterValue,
+            })}
+            data-cy={`FilterLink${filter}`}
+            onClick={() => setFilterValue(filter)}
+          >
+            {filter}
+          </a>
+        ))}
       </nav>
 
       {/* this button should be disabled if there are no completed todos */}
